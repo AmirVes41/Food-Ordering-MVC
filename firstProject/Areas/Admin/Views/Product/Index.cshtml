@@ -1,0 +1,71 @@
+﻿@model List<Product>
+
+<div class="card shadow border-0 mt-4" dir="rtl">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-primary" dir="auto"> لیست غذا ها</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body p-4">
+        <div class="row">
+ 
+
+            <div class="col-6">
+                <a asp-controller="Product" asp-action="Upsert" class="btn btn-dark">
+                    <i class="bi bi-plus-circle"> افزودن غذا  </i>
+                </a>
+            </div>
+        </div>
+
+        <table id="tblData" class=" table table-bordered table-striped" style="width:auto" dir="auto">
+            <thead>
+                <tr>
+                    <th>نام غذا</th>
+                    <th>توضیحالت</th>
+                    <th>قیمت</th>
+                    <th>موجودی</th>
+                    <th>دسته بندی</th>
+                    <th></th>
+                </tr>
+            </thead>
+            @* <tbody>
+                
+                    @foreach (var @obj in Model)
+                {
+                    <tr>
+                       
+                        <td>@obj.Name</td>
+                        <td>@obj.Description</td>
+                        <td>@obj.Price</td>
+                        <td>@obj.Count</td>
+                        <td>@obj.Category.Name</td>
+                         <td>
+                            <div class="w-75 btn-group" role="group">
+                                <a asp-controller="Product" asp-action="Upsert" asp-route-id="@obj.Id" class="btn btn-dark mx-2">
+                                    <i class="bi bi-pencil-square"></i> ویرایش
+                                </a>
+                                <a asp-controller="Product" asp-action="Delete" asp-route-id="@obj.Id" class="btn btn-danger mx-2">
+                                    <i class="bi bi-trash3"></i> حذف
+                                </a>
+                            </div>
+
+                        </td>
+                    </tr>
+                }
+                
+            </tbody>*@
+        </table>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/js/product.js"></script>
+}
+
+
+<div class="container" >
+
+</div>

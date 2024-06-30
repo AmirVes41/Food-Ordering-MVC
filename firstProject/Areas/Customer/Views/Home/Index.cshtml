@@ -1,0 +1,36 @@
+﻿@model IEnumerable<Product>
+
+<div class="row pb-3">
+    @foreach (var product in Model.OrderBy(f => f.CategoryId))
+    {
+        <div class="col-lg-3 col-sm-6">
+            <div class="row p-2">
+                <div class="col-12 p-1">
+                    <div class="card border-0 p-3 shadow  border-top border-5 rounded">
+                        <div class="card-body pb-0">
+                            <div class="pl-1">
+                                <p class="card-title h5 text-dark opacity-75 text-uppercase text-center">@product.Category.Name</p>
+                                <p class="card-title text-warning text-center"><b>@product.Name</b></p>
+                            </div>
+                            <div class="pl-1">
+                                <p class="text-dark text-opacity-75 text-center mb-0">
+                                    قیمت نهایی:
+                                    <span class="text">
+                                        @product.Price.ToString("N0")
+                                    </span>
+                                    تومان
+                                </p>
+                            </div>
+                        </div>
+                        <div>
+                            <a asp-action="Details" asp-route-productId="@product.Id" class="btn btn-primary bg-gradient border-0 form-control">
+                                جزئیات
+                            </a>
+                            <p class="card-title text text-center">@(string.IsNullOrWhiteSpace(product.Description) ? "" : "حاوی") <b>@product.Description</b></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,23 @@
+﻿@page
+@model RegisterConfirmationModel
+@{
+    ViewData["Title"] = "تائیدیه ثبتنام";
+}
+
+<h1>@ViewData["Title"]</h1>
+@{
+    if (@Model.DisplayConfirmAccountLink)
+    {
+<p>
+    این برنامه هنوز  ارسال کننده واقعی ایمیل ندارد, این مقاله را <a href="https://aka.ms/aspaccountconf">ببینید</a> برای اینکه بداند چگونه یک ارسال کننده ایمیل بسازید
+   معمولاباید برای شما ایمیل بشود:  <a id="confirm-link" href="@Model.EmailConfirmationUrl">اینجا کلیک کنید تا ایمیل شما تایئد شود</a>
+</p>
+    }
+    else
+    {
+<p>
+        لطفا ایمیل خود را چک کنید.
+</p>
+    }
+}
+

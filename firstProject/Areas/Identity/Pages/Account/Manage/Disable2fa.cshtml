@@ -1,0 +1,28 @@
+﻿@page
+@model Disable2faModel
+@{
+    ViewData["Title"] = "غیر فعال سازی احراز هویت دو مرحله ای (2FA)";
+    ViewData["ActivePage"] = ManageNavPages.TwoFactorAuthentication;
+}
+
+<partial name="_StatusMessage" for="StatusMessage" />
+<h3>@ViewData["Title"]</h3>
+
+<div class="alert alert-warning" role="alert">
+    <p>
+        <strong>
+            This action only disables 2FA
+            این عمل فقط 2FA را غیرفعال می کند.
+        </strong>
+    </p>
+    <p>
+        Dفعال کردن 2FA کلیدهای مورد استفاده در برنامه های احراز هویت را تغییر نمی دهد. اگر می خواهید کلید را تغییر دهید
+        باید در یک برنامه احراز هویت استفاده شود <a asp-page="./ResetAuthenticator"> 2FA تغییر کد</a>
+    </p>
+</div>
+
+<div>
+    <form method="post">
+        <button class="btn btn-danger" type="submit">غیسر فعال سازی 2FA</button>
+    </form>
+</div>

@@ -1,0 +1,32 @@
+﻿@page
+@model ExternalLoginModel
+@{
+    ViewData["Title"] = "ثبت نام";
+}
+
+<h1>@ViewData["Title"]</h1>
+<h2 id="external-login-title">اکانت خود را با @Model.ProviderDisplayName مرتبط کنید.</h2>
+<hr />
+
+<p id="external-login-description" class="text-info">
+    احراز هویت شما با موفقیت توسط <strong>@Model.ProviderDisplayName</strong>تایئد شد.
+    لطفاً یک آدرس ایمیل برای ورود به این سایت در زیر وارد کنید و روی دکمه ثبت کلیک کنید تا کار تمام شود
+</p>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Email" class="form-control" autocomplete="email" placeholder="لطفا ادرس ایمل وارد کنید"/>
+                <label asp-for="Input.Email" class="form-label"></label>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            <button type="submit" class="w-100 btn btn-lg btn-primary">ثبت نام</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
