@@ -42,19 +42,19 @@
             <span></span>
             <ul class="list-group list-group-horizontal-sm">
                 <a style="text-decoration:none;" asp-controller="Order" asp-action="Index" asp-route-status="inprocess">
-                <li class="list-group-item">در جریان</li>
+                <li class="list-group-item @inprocess">در جریان</li>
                 </a>
                 <a style="text-decoration:none;" asp-controller="Order" asp-action="Index" asp-route-status="pending">
-                <li class="list-group-item">در انتظار پرداخت</li>
+                <li class="list-group-item @pending">در انتظار پرداخت</li>
                 </a>
                 <a style="text-decoration:none;" asp-controller="Order" asp-action="Index" asp-route-status="completed">
-                <li class="list-group-item">خاتمه پافته</li>
+                <li class="list-group-item @completed">خاتمه پافته</li>
                 </a>
                 <a style="text-decoration:none;" asp-controller="Order" asp-action="Index" asp-route-status="approved">
-                <li class="list-group-item">تائید شده</li>
+                <li class="list-group-item @approved">تائید شده</li>
                 </a>
                 <a style="text-decoration:none;" asp-controller="Order" asp-action="Index" asp-route-status="all">
-                <li class="list-group-item">همه</li>
+                <li class="list-group-item @all">همه</li>
                 </a>
             </ul>
         </div>
