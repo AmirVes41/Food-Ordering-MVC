@@ -125,7 +125,8 @@ namespace firstProject.Areas.Customer.Controllers
             {
                 //THIS IS NORMAL USER
                 //payment action
-
+                ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusApproved;
+                ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusApproved;
             }
 
 
