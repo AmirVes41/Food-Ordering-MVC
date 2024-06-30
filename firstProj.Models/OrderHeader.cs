@@ -26,7 +26,8 @@ namespace firstProj.Models
         public double OrderTotal { get; set; }
 
 
-        [Display(Name = "وضعیت سفارش")] public string? OrderStatus { get; set; }
+        [Display(Name = "وضعیت سفارش")] 
+        public string? OrderStatus { get; set; }
         public string? PaymentStatus { get; set; }
         public string? TrackingNumber { get; set; }
         public string? Carrier { get; set; }
