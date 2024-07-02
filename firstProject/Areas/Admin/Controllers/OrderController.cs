@@ -1,4 +1,5 @@
-﻿using firstProj.DataAccess.Repository;
+﻿using firstProj.DataAccess.Migrations;
+using firstProj.DataAccess.Repository;
 using firstProj.DataAccess.Repository.IRepository;
 using firstProj.Models;
 using firstProj.Models.ViewModels;
@@ -136,15 +137,17 @@ namespace firstProject.Areas.Admin.Controllers
 
         public IActionResult PaymentConfirmation(int orderHeaderId)
         {
-            string fid = "fake ID";
-            OrderHeader orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == orderHeaderId);
-            _unitOfWork.OrderHeader.UpdatePaymentID(orderHeaderId, fid, fid);
-            _unitOfWork.OrderHeader.UpdateStatus(orderHeaderId, orderHeader.OrderStatus, SD.PaymentStatusApproved);
+            var orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == OrderVM.OrderHeader.Id);
+            _unitOfWork.OrderHeader.UpdateStatus(orderHeader.Id, SD.StatusApproved, SD.PaymentStatusApproved);
+            _unitOfWork.OrderHeader.UpdatePaymentID(orderHeader.Id, "FakeId", orderHeader.PaymentIntentId);
+
             _unitOfWork.Save();
+            TempData["Success"] = "پرداخت موفقیت امیز بود.";
             return View(orderHeaderId);
 
         }
 
+            
 
 
         #region API CALLS
