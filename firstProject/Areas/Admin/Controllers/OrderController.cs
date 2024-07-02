@@ -1,4 +1,5 @@
-﻿using firstProj.DataAccess.Repository;
+﻿using firstProj.DataAccess.Migrations;
+using firstProj.DataAccess.Repository;
 using firstProj.DataAccess.Repository.IRepository;
 using firstProj.Models;
 using firstProj.Models.ViewModels;
@@ -119,74 +120,65 @@ namespace firstProject.Areas.Admin.Controllers
 
         [ActionName("Details")]
         [HttpPost]
-     //   public IActionResult Details_PAY_NOW()
-     //   {
-     //       OrderVM.OrderHeader = _unitOfWork.OrderHeader
-     //.Get(u => u.Id == OrderVM.OrderHeader.Id, includeProperties: "ApplicationUser");
-     //       OrderVM.OrderDetail = _unitOfWork.OrderDetail
-     //           .GetAll(u => u.OrderHeaderId == OrderVM.OrderHeader.Id, includeProperties: "Product");
-     //   }
+        //   public IActionResult Details_PAY_NOW()
+        //   {
+        //       OrderVM.OrderHeader = _unitOfWork.OrderHeader
+        //.Get(u => u.Id == OrderVM.OrderHeader.Id, includeProperties: "ApplicationUser");
+        //       OrderVM.OrderDetail = _unitOfWork.OrderDetail
+        //           .GetAll(u => u.OrderHeaderId == OrderVM.OrderHeader.Id, includeProperties: "Product");
+        //   }
 
-            public IActionResult PaymentConfirmation(int orderHeaderId)
-            {
+        public IActionResult PaymentConfirmation()
+        {
+            var orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == OrderVM.OrderHeader.Id);
+            _unitOfWork.OrderHeader.UpdateStatus(orderHeader.Id, SD.StatusApproved, SD.PaymentStatusApproved);
+            _unitOfWork.OrderHeader.UpdatePaymentID(orderHeader.Id, "FakeId", orderHeader.PaymentIntentId);
+            _unitOfWork.Save();
 
+            TempData["Success"] = "پردذاخت موفقیت امیز بود.";
 
-                OrderHeader orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == orderHeaderId);
-                if (orderHeader.PaymentStatus == SD.PaymentStatusDelayedPayment)
-                {
-                  
-                    {
-                        _unitOfWork.OrderHeader.UpdatePaymentID(orderHeaderId, orderHeader.Carrier , orderHeader.PaymentIntentId);
-                        _unitOfWork.OrderHeader.UpdateStatus(orderHeaderId, orderHeader.OrderStatus, SD.PaymentStatusApproved);
-                        _unitOfWork.Save();
-                    }
-
-
-                }
-
-
-                return View(orderHeaderId);
-            }
-
-            #region API CALLS
-            [HttpGet]
-            public IActionResult GetAll(string status)
-            {
-                IEnumerable<OrderHeader> objOrderHeaders;
-
-
-                if (User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Employee))
-                {
-                    objOrderHeaders = _unitOfWork.OrderHeader.GetAll(includeProperties: "ApplicationUser").ToList();
-                }
-                else
-                {
-
-                    var claimsIdentity = (ClaimsIdentity)User.Identity;
-                    var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-                    objOrderHeaders = _unitOfWork.OrderHeader
-                        .GetAll(u => u.ApplicationUserId == userId, includeProperties: "ApplicationUser");
-                }
-                switch (status)
-                {
-                    case "pending":
-                        objOrderHeaders = objOrderHeaders.Where(u => u.PaymentStatus == SD.PaymentStatusDelayedPayment);
-                        break;
-                    case "inprocess":
-                        objOrderHeaders = objOrderHeaders.Where(u => u.OrderStatus == SD.StatusInProcess);
-                        break;
-                    case "completed":
-                        objOrderHeaders = objOrderHeaders.Where(u => u.OrderStatus == SD.StatusShipped);
-                        break;
-                    case "approved":
-                        objOrderHeaders = objOrderHeaders.Where(u => u.OrderStatus == SD.StatusApproved);
-                        break;
-                    default:
-                        break;
-                }
-                return Json(new { data = objOrderHeaders });
-            }
-            #endregion
+            return RedirectToAction(nameof(Details), new { orderId = OrderVM.OrderHeader.Id });
         }
+
+        #region API CALLS
+        [HttpGet]
+        public IActionResult GetAll(string status)
+        {
+            IEnumerable<OrderHeader> objOrderHeaders;
+
+
+            if (User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Employee))
+            {
+                objOrderHeaders = _unitOfWork.OrderHeader.GetAll(includeProperties: "ApplicationUser").ToList();
+            }
+            else
+            {
+
+                var claimsIdentity = (ClaimsIdentity)User.Identity;
+                var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+                objOrderHeaders = _unitOfWork.OrderHeader
+                    .GetAll(u => u.ApplicationUserId == userId, includeProperties: "ApplicationUser");
+            }
+            switch (status)
+            {
+                case "pending":
+                    objOrderHeaders = objOrderHeaders.Where(u => u.PaymentStatus == SD.PaymentStatusDelayedPayment);
+                    break;
+                case "inprocess":
+                    objOrderHeaders = objOrderHeaders.Where(u => u.OrderStatus == SD.StatusInProcess);
+                    break;
+                case "completed":
+                    objOrderHeaders = objOrderHeaders.Where(u => u.OrderStatus == SD.StatusShipped);
+                    break;
+                case "approved":
+                    objOrderHeaders = objOrderHeaders.Where(u => u.OrderStatus == SD.StatusApproved);
+                    break;
+                default:
+                    break;
+            }
+            return Json(new { data = objOrderHeaders });
+        }
+        #endregion
     }
+}

@@ -38,8 +38,13 @@ namespace firstProj.DataAccess.Repository
             }
         }
 
-        public void UpdatePaymentID(int id, string sessionId, string paymentIntentId)
+        public void UpdatePaymentID(int id, string? sessionId, string paymentIntentId)
+
         {
+            if(sessionId == null)
+            {
+                sessionId = "FakeSessionID";
+            }
             var orderFromDb = _db.OrderHeaders.FirstOrDefault(u => u.Id == id);
             if (!string.IsNullOrEmpty(sessionId))
             {

@@ -14,6 +14,6 @@ namespace firstProj.DataAccess.Repository.IRepository
         void Update(OrderHeader obj);
         //status of payment
         void UpdateStatus(int id, string orderStatus, string? paymentStatus = null);
-        void UpdatePaymentID(int id, string session, string paymentIntentId);
+        void UpdatePaymentID(int id, string? session, string paymentIntentId);
     }
 }
