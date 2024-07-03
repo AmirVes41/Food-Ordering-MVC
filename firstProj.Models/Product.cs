@@ -36,5 +36,9 @@ namespace firstProj.Models
         [ForeignKey("CategoryId")]
         [ValidateNever]
         public Category Category { get; set; }
+
+        [Required]
+        [Display(Name = "تاریخ عرضه")]
+        public DateOnly date {  get; set; }
     }
 }

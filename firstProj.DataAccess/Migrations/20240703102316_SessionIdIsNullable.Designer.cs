@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using firstProject.DataAccess.Data;
 
@@ -11,9 +12,11 @@ using firstProject.DataAccess.Data;
 namespace firstProj.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240703102316_SessionIdIsNullable")]
+    partial class SessionIdIsNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -446,9 +449,6 @@ namespace firstProj.DataAccess.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<DateOnly>("date")
-                        .HasColumnType("date");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
@@ -463,8 +463,7 @@ namespace firstProj.DataAccess.Migrations
                             Count = 35,
                             Description = "لوبیا سبزیجات رشته دوغ",
                             Name = "آش",
-                            Price = 26000.0,
-                            date = new DateOnly(2024, 7, 4)
+                            Price = 26000.0
                         },
                         new
                         {
@@ -473,8 +472,7 @@ namespace firstProj.DataAccess.Migrations
                             Count = 25,
                             Description = "  ",
                             Name = "نوشابه",
-                            Price = 15000.0,
-                            date = new DateOnly(2024, 7, 4)
+                            Price = 15000.0
                         },
                         new
                         {
@@ -483,8 +481,7 @@ namespace firstProj.DataAccess.Migrations
                             Count = 15,
                             Description = "رشته فرنگی رب هویج نخود فرنگی ادویه",
                             Name = "سوپ رشته",
-                            Price = 30000.0,
-                            date = new DateOnly(2024, 7, 4)
+                            Price = 30000.0
                         },
                         new
                         {
@@ -493,8 +490,7 @@ namespace firstProj.DataAccess.Migrations
                             Count = 30,
                             Description = "کاهو سس و سزار رنده شده",
                             Name = "سالاد سزار",
-                            Price = 150000.0,
-                            date = new DateOnly(2024, 7, 4)
+                            Price = 150000.0
                         },
                         new
                         {
@@ -503,8 +499,7 @@ namespace firstProj.DataAccess.Migrations
                             Count = 25,
                             Description = "  ",
                             Name = "دوغ",
-                            Price = 15000.0,
-                            date = new DateOnly(2024, 7, 4)
+                            Price = 15000.0
                         });
                 });
 

@@ -63,7 +63,7 @@ namespace firstProject.Areas.Customer.Controllers
             ShoppingCartVM.OrderHeader.PhoneNumber = ShoppingCartVM.OrderHeader.ApplicationUser.PhoneNumber;
             ShoppingCartVM.OrderHeader.LastName = ShoppingCartVM.OrderHeader.ApplicationUser.LastName;
             ShoppingCartVM.OrderHeader.Code = ShoppingCartVM.OrderHeader.ApplicationUser.Code;
-           
+
             foreach (var cart in ShoppingCartVM.ShoppingCartList)
             {
                 cart.Price = getPrice(cart);
@@ -82,7 +82,7 @@ namespace firstProject.Areas.Customer.Controllers
             ShoppingCartVM.ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId,
                 includeProperties: "Product");
             ShoppingCartVM.OrderHeader.OrderDate = System.DateTime.Now;
-            ShoppingCartVM.OrderHeader.ApplicationUserId= userId;
+            ShoppingCartVM.OrderHeader.ApplicationUserId = userId;
             ApplicationUser applicationUser = _unitOfWork.ApplicationUser.Get(u => u.Id == userId);
 
             //ShoppingCartVM.OrderHeader.FirstName = ShoppingCartVM.OrderHeader.ApplicationUser.FirstName;
@@ -109,7 +109,7 @@ namespace firstProject.Areas.Customer.Controllers
             }
             _unitOfWork.OrderHeader.Add(ShoppingCartVM.OrderHeader);
             _unitOfWork.Save();
-            foreach(var cart in ShoppingCartVM.ShoppingCartList)
+            foreach (var cart in ShoppingCartVM.ShoppingCartList)
             {
                 OrderDetail orderDetail = new()
                 {
@@ -130,12 +130,20 @@ namespace firstProject.Areas.Customer.Controllers
             }
 
 
-            return RedirectToAction(nameof(OrderConfirmation),new {id=ShoppingCartVM.OrderHeader.Id});
+            return RedirectToAction(nameof(OrderConfirmation), new { id = ShoppingCartVM.OrderHeader.Id });
         }
 
         public IActionResult OrderConfirmation(int id)
         {
+            var cartFromDb = _unitOfWork.OrderHeader.Get(u => u.Id   == id, tracked: true);
+            cartFromDb.PaymentStatus = SD.PaymentStatusApproved;
+            cartFromDb.OrderStatus = SD.StatusApproved;
+            _unitOfWork.OrderHeader.UpdateStatus(id, SD.StatusShipped);
+            _unitOfWork.Save();
+
+            HttpContext.Session.Clear();
             return View(id);
+
         }
 
 
@@ -150,11 +158,14 @@ namespace firstProject.Areas.Customer.Controllers
 
         public IActionResult Minus(int cartId)
         {
-            var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cartId);
+            var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cartId, tracked: true);
             if (cartFromDb.Count <= 1)
             {
                 //remove that from cart
+                HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCart
+                   .GetAll(u => u.ApplicationUserId == cartFromDb.ApplicationUserId).Count() - 1);
                 _unitOfWork.ShoppingCart.Remove(cartFromDb);
+
             }
             else
             {
@@ -168,7 +179,9 @@ namespace firstProject.Areas.Customer.Controllers
 
         public IActionResult Remove(int cartId)
         {
-            var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cartId);
+            var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cartId, tracked: true);
+            HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCart
+               .GetAll(u => u.ApplicationUserId == cartFromDb.ApplicationUserId).Count() - 1);
             _unitOfWork.ShoppingCart.Remove(cartFromDb);
             _unitOfWork.Save();
             return RedirectToAction(nameof(Index));

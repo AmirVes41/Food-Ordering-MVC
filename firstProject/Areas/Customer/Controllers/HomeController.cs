@@ -4,6 +4,11 @@ using System.Diagnostics;
 using firstProj.DataAccess.Repository.IRepository;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using firstProj.Utility;
+using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
+using System.Security.Claims;
+using System.Globalization;
 
 namespace firstProject.Areas.Customer.Controllers
 {
@@ -19,10 +24,62 @@ namespace firstProject.Areas.Customer.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        public IActionResult Index()
+        public IActionResult WeekDays()
         {
-            IEnumerable<Product> productList = _unitOfWork.Product.GetAll(includeProperties: "Category");
-            return View(productList);
+            var today = DateTime.Today;
+            var days = new List<string>();
+
+            // Determine starting day
+            if (today.DayOfWeek == DayOfWeek.Thursday || today.DayOfWeek == DayOfWeek.Friday || today.DayOfWeek == DayOfWeek.Wednesday)
+            {
+                // Find the next Saturday
+                var nextSaturday = today.AddDays(((int)DayOfWeek.Saturday - (int)today.DayOfWeek + 7) % 7);
+                today = nextSaturday;
+            }
+            else
+            {
+                today = today.AddDays(1);
+            }
+
+            // Add days from today until the next Wednesday
+            for (var date = today; date.DayOfWeek != DayOfWeek.Thursday; date = date.AddDays(1))
+            {
+                days.Add(date.ToString("yyyy-MM-dd"));
+
+            }
+
+            return View(days);
+        }
+
+        //public IActionResult IndexOld()
+        //{
+        //    //var claimsIdentity = (ClaimsIdentity)User.Identity;
+        //    //var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+        //    //if (claim != null)
+        //    //{
+        //    //    HttpContext.Session.SetInt32(SD.SessionCart,
+        //    //    _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == claim.Value).Count());
+        //    //}
+        //    IEnumerable<Product> productList = _unitOfWork.Product.GetAll(includeProperties: "Category");
+        //    return View(productList);
+        //}
+
+               [HttpGet("Customer/Home/Index/{date?}")]
+        public IActionResult Index(string date)
+        {
+            DateOnly filterDate;
+
+            if (!string.IsNullOrEmpty(date) && DateOnly.TryParseExact(date, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out filterDate))
+            {
+                IEnumerable<Product> productList = _unitOfWork.Product.GetAll(p => p.date == filterDate, includeProperties: "Category");
+                return View(productList);
+            }
+            else
+            {
+                IEnumerable<Product> productList = _unitOfWork.Product.GetAll(includeProperties: "Category");
+                return View(productList);
+            }
         }
 
         public IActionResult Details(int productId)
@@ -52,16 +109,16 @@ namespace firstProject.Areas.Customer.Controllers
                 //shopping cart exists
                 cartFromDb.Count += shoppingCart.Count;
                 _unitOfWork.ShoppingCart.Update(cartFromDb);
+                _unitOfWork.Save();
             }
             else
             {
                 //add cart record
                 _unitOfWork.ShoppingCart.Add(shoppingCart);
+                _unitOfWork.Save();
+                HttpContext.Session.SetInt32(SD.SessionCart,
+                _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId).Count());
             }
-
-            _unitOfWork.Save();
-
-
             return RedirectToAction(nameof(Index));
         }
 

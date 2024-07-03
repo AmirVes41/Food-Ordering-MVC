@@ -1,0 +1,25 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    // Get the first element of the list
+    var firstDayString = Model[0];
+    DateOnly? firstDayDate = null;
+
+    // Parse the firstDayString into DateOnly
+    if (!string.IsNullOrEmpty(firstDayString))
+    {
+        firstDayDate = DateOnly.Parse(firstDayString);
+    }
+}
+
+<h1>Days until next Wednesday starting from @firstDayDate.Value.DayOfWeek</h1>
+
+ <ul>
+        @foreach (var day in Model)
+        {
+            <li>
+               <a href="customer/Home/Index/@day">@day</a>
+            </li>
+        }
+</ul>

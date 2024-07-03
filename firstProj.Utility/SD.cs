@@ -9,7 +9,7 @@ namespace firstProj.Utility
     //staticc detail
     public static class SD
     {
-        public const string Role_Customer = "Customer";
+        public const string Role_Customer = "Admin";
         public const string Role_Company = "Company";
         public const string Role_Admin = "Admin";
         public const string Role_Employee = "Employee";
@@ -25,5 +25,8 @@ namespace firstProj.Utility
         public const string PaymentStatusApproved = "Approved";
         public const string PaymentStatusDelayedPayment = "ApprovedForDelayedPayment";
         public const string PaymentStatusRejected = "Rejected";
+
+
+        public const string SessionCart = "SessionShoppingCart";
     }
 }

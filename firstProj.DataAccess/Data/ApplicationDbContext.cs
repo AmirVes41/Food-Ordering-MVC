@@ -56,7 +56,8 @@ namespace firstProject.DataAccess.Data
                     Description = "لوبیا سبزیجات رشته دوغ",
                     Price = 26000,
                     Count = 35,
-                    CategoryId = 1
+                    CategoryId = 1,
+                    date = new DateOnly(2024, 7, 4)
                 },
                 new Product
                 {
@@ -65,7 +66,9 @@ namespace firstProject.DataAccess.Data
                     Description = "  ",
                     Price = 15000,
                     Count = 25,
-                    CategoryId = 4
+                    CategoryId = 4,
+                    date = new DateOnly(2024, 7, 4)
+
                 },
                 new Product
                 {
@@ -74,7 +77,9 @@ namespace firstProject.DataAccess.Data
                     Description = "رشته فرنگی رب هویج نخود فرنگی ادویه",
                     Price = 30000,
                     Count = 15,
-                    CategoryId = 2
+                    CategoryId = 2,
+                    date = new DateOnly(2024, 7, 4)
+
                 },
                 new Product
                 {
@@ -83,7 +88,9 @@ namespace firstProject.DataAccess.Data
                     Description = "کاهو سس و سزار رنده شده",
                     Price = 150000,
                     Count = 30,
-                    CategoryId = 3
+                    CategoryId = 3,
+                    date = new DateOnly(2024, 7, 4)
+
                 },
                 new Product
                 {
@@ -92,7 +99,9 @@ namespace firstProject.DataAccess.Data
                     Description = "  ",
                     Price = 15000,
                     Count = 25,
-                    CategoryId = 4
+                    CategoryId = 4,
+                    date = new DateOnly(2024, 7, 4)
+
                 }
                 );
         }
