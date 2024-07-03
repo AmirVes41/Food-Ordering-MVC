@@ -26,7 +26,8 @@ namespace firstProject.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPost(string returnUrl = null)
         {
             await _signInManager.SignOutAsync();
-            _logger.LogInformation("User logged out.");
+          //  HttpContext.Session.Clear();
+            _logger.LogInformation("کاربر خارج شد.");
             if (returnUrl != null)
             {
                 return LocalRedirect(returnUrl);
