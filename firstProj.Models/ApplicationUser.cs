@@ -21,10 +21,12 @@ namespace firstProj.Models {
 
         //[DisplayName("شماره تلفن")]
         //public string? PhoneNumber { get; set; }
-        
+        [DisplayName("سازمان")]
         public int? CompanyId { get; set; }
         [ForeignKey("CompanyId")]
         [ValidateNever]
-        public Company Company { get; set; }    
+        public Company? Company { get; set; }
+        [NotMapped]
+        public string Role { get; set; }
     }
 }
