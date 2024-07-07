@@ -73,42 +73,39 @@ namespace firstProject.Areas.Customer.Controllers
         }
 
         [HttpPost]
-        [ActionName("SUmmary")]
+        [ActionName("Summary")]
         public IActionResult SummaryPOST()
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            ShoppingCartVM.ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId,
-                includeProperties: "Product");
+            ShoppingCartVM.ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Product");
             ShoppingCartVM.OrderHeader.OrderDate = System.DateTime.Now;
             ShoppingCartVM.OrderHeader.ApplicationUserId = userId;
             ApplicationUser applicationUser = _unitOfWork.ApplicationUser.Get(u => u.Id == userId);
-
-            //ShoppingCartVM.OrderHeader.FirstName = ShoppingCartVM.OrderHeader.ApplicationUser.FirstName;
-            //ShoppingCartVM.OrderHeader.PhoneNumber = ShoppingCartVM.OrderHeader.ApplicationUser.PhoneNumber;
-            //ShoppingCartVM.OrderHeader.LastName = ShoppingCartVM.OrderHeader.ApplicationUser.LastName;
-            //ShoppingCartVM.OrderHeader.Code = ShoppingCartVM.OrderHeader.ApplicationUser.Code;
 
             foreach (var cart in ShoppingCartVM.ShoppingCartList)
             {
                 cart.Price = getPrice(cart);
                 ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
             }
+
             if (applicationUser.CompanyId.GetValueOrDefault() == 0)
             {
-                //this is a normal user
+                // This is a normal user
                 ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusPending;
                 ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusPending;
             }
             else
             {
-                //it is a company user
+                // This is a company user
                 ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusDelayedPayment;
                 ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusApproved;
             }
+
             _unitOfWork.OrderHeader.Add(ShoppingCartVM.OrderHeader);
             _unitOfWork.Save();
+
             foreach (var cart in ShoppingCartVM.ShoppingCartList)
             {
                 OrderDetail orderDetail = new()
@@ -119,19 +116,29 @@ namespace firstProject.Areas.Customer.Controllers
                     Count = cart.Count
                 };
                 _unitOfWork.OrderDetail.Add(orderDetail);
+
+                // Update the product inventory
+                var product = _unitOfWork.Product.Get(p => p.Id == cart.ProductId);
+                if (product != null)
+                {
+                    product.Count -= cart.Count;
+                    _unitOfWork.Product.Update(product);
+                }
+
                 _unitOfWork.Save();
             }
+
             if (applicationUser.CompanyId.GetValueOrDefault() == 0)
             {
-                //THIS IS NORMAL USER
-                //payment action
+                // This is a normal user
+                // Payment action
                 ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusApproved;
                 ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusApproved;
             }
 
-
             return RedirectToAction(nameof(OrderConfirmation), new { id = ShoppingCartVM.OrderHeader.Id });
         }
+
 
         public IActionResult OrderConfirmation(int id)
         {
