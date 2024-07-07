@@ -1,29 +1,83 @@
-﻿@{
-    // Get the first element of the list
-    var firstDayString = Model[0];
-    DateOnly? firstDayDate = null;
+﻿@using System.Globalization
 
-    // Parse the firstDayString into DateOnly
-    if (!string.IsNullOrEmpty(firstDayString))
-    {
-        firstDayDate = DateOnly.Parse(firstDayString);
-    }
-}
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <title>Persian Date Example</title>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font/dist/font-face.css" rel="stylesheet" type="text/css" />
+    <style>
+        body, h1, h5, a, p, div, li {
+            font-family: 'Vazir', sans-serif;
+            direction: rtl;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
 
-<h1>Days until next Wednesday starting from @firstDayDate.Value.DayOfWeek</h1>
-
-<div class="container mt-4">
-    <div class="row">
-        @foreach (var day in Model)
+    @functions {
+        public string ToShamsi(DateOnly date)
         {
-            <div class="col-md-4 mb-4">
-                <div class="card">
-                    <div class="card-body text-center">
-                        <h5 class="card-title">@day</h5>
-                        <a href="customer/Home/Index/@day" class="btn btn-primary mt-2">انتخاب غذا</a>
+            var persianCalendar = new PersianCalendar();
+            var year = persianCalendar.GetYear(date.ToDateTime(TimeOnly.MinValue));
+            var month = persianCalendar.GetMonth(date.ToDateTime(TimeOnly.MinValue));
+            var day = persianCalendar.GetDayOfMonth(date.ToDateTime(TimeOnly.MinValue));
+            return $"{year:0000}/{month:00}/{day:00}";
+        }
+
+        public string GetDayNameInShamsi(DateOnly date)
+        {
+            var dayOfWeek = date.DayOfWeek;
+            return dayOfWeek switch
+            {
+                DayOfWeek.Saturday => "شنبه",
+                DayOfWeek.Sunday => "یک‌شنبه",
+                DayOfWeek.Monday => "دوشنبه",
+                DayOfWeek.Tuesday => "سه‌شنبه",
+                DayOfWeek.Wednesday => "چهارشنبه",
+                DayOfWeek.Thursday => "پنج‌شنبه",
+                DayOfWeek.Friday => "جمعه",
+                _ => ""
+            };
+        }
+
+        public string ToGregorianString(DateOnly date)
+        {
+            return date.ToString("yyyy-MM-dd");
+        }
+    }
+
+    @{
+        // Get the first element of the list
+        var firstDayString = Model[0];
+        DateOnly? firstDayDate = null;
+
+        // Parse the firstDayString into DateOnly
+        if (!string.IsNullOrEmpty(firstDayString))
+        {
+            firstDayDate = DateOnly.Parse(firstDayString);
+        }
+    }
+
+    <h1>Days until next Wednesday starting from @GetDayNameInShamsi(firstDayDate.Value)</h1>
+
+    <div class="container mt-4">
+        <div class="row">
+            @foreach (var dayString in Model)
+            {
+                DateOnly day = DateOnly.Parse(dayString);
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">@GetDayNameInShamsi(day) - @ToShamsi(day)</h5>
+                            <a href="customer/Home/Index/@ToGregorianString(day)" class="btn btn-primary mt-2">انتخاب غذا</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
+            }
+        </div>
     </div>
-</div>
+
+</body>
+</html>
