@@ -145,14 +145,19 @@ namespace firstProject.Areas.Customer.Controllers
             var cartFromDb = _unitOfWork.OrderHeader.Get(u => u.Id   == id, tracked: true);
             cartFromDb.PaymentStatus = SD.PaymentStatusApproved;
             cartFromDb.OrderStatus = SD.StatusApproved;
+            UpdateStock();
             _unitOfWork.OrderHeader.UpdateStatus(id, SD.StatusShipped);
             _unitOfWork.Save();
+
 
             HttpContext.Session.Clear();
             return View(id);
 
         }
-
+         public void UpdateStock (int id)
+        {
+            //need to decrresavailability of products in stock as ordered
+        }
 
         public IActionResult Plus(int cartId)
         {
